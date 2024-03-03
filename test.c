@@ -14,9 +14,18 @@ int main(void) {
   second.last = &first;
   initialize_model(&first);
   double input[100] = {};
-  double *output = predict(&first, input);
-  for (int i = 0; i < 10; i ++) {
-    printf("%lf ", output[i]);
+  for (int i = 0; i < 100; i++) {
+    input[i] = 1.0;
   }
-  printf("\n");
+  for (int i = 0; i < 10; i++) {
+    printf("%lf ", second.activations[i]);
+  }
+  double output[10] = {};
+  while (1) {
+    train(&first, input, output, 0.001);
+    for (int i = 0; i < 10; i++) {
+      printf("%lf ", second.activations[i]);
+    }
+    printf("\n");
+  }
 }
