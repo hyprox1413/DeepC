@@ -1,2 +1,2 @@
 # DeepC
-Basic feed-forward network implementation in C with ReLU activation and naive gradient descent.
+Basic feed-forward network implementation in C with ReLU activation and naive gradient descent with mean squared error loss.
