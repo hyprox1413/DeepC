@@ -106,7 +106,6 @@ double calc_partial(layer_t *cur_layer, int i, double *output) {
   } 
   else {
     double total = 0;
-    fprintf(stderr, "%d", i);
     for (int j = 0; j < cur_layer->next->neurons; j++) {
       total += cur_layer->next->weights[cur_layer->neurons * j + i]
         * calc_partial(cur_layer->next, j, output);
