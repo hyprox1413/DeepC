@@ -1,5 +1,5 @@
 # DeepC
-Basic feed-forward network implementation in C with ReLU activation and naive gradient descent with mean squared error loss.
+Lightweight, low-level and fast implementation of feed-forward neural networks in C.  Uses ReLU activation and naive gradient descent with mean squared error loss.
 
 Now with a test for MNIST digits!  Confirmed: It works!
 
