@@ -62,8 +62,9 @@ void initialize_model(layer_t *first_layer) {
 }
 
 /* 
- * This one does what you think it does.  Be careful of the buffer
- * size of the input argument.  Also, remember to free() the output. 
+ * Updates the activations of the network.  Be careful of the 
+ * input buffer size.  It is determined by the input dimension
+ * of the model.
  */
 
 double *predict(layer_t *first_layer, double *input) {
@@ -100,6 +101,11 @@ double *predict(layer_t *first_layer, double *input) {
   return cur_layer->activations;
 }
 
+/*
+ * Calculates the partial derivative of the mean squared error loss
+ * with respect to the ith neuron in the passed layer.
+ */
+
 double calc_partial(layer_t *cur_layer, int i, double *output) {
   if (!cur_layer->next) {
     return -2 * (output[i] - cur_layer->activations[i]);
@@ -113,6 +119,11 @@ double calc_partial(layer_t *cur_layer, int i, double *output) {
     return total;
   }
 }
+
+/*
+ * Updates the weights and biases of the model through deterministic
+ * gradient descent with an adjustable learning rate.
+ */
 
 void train(layer_t *first_layer, double *input, double *output,
            double learn_rate) {
