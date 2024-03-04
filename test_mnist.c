@@ -10,6 +10,11 @@ int main() {
   double *test_image = malloc(sizeof(double) * 10000 * 784);
   int *test_label = malloc(sizeof(int) * 10000);
 
+  if (!(train_image && train_label && test_image && test_label)) {
+    fprintf(stderr, "Out of memory.\n");
+    exit(OUT_OF_MEMORY);
+  }
+
   FILE *fp = fopen("mnist.bin", "rb");
   fread(train_image, sizeof(double), 60000 * 784, fp);
   fread(train_label, sizeof(int), 60000, fp);
@@ -55,6 +60,11 @@ int main() {
   layer_t second = {10};
   first.next = &second;
   second.last = &first;
+  /*
+  layer_t third = {10};
+  second.next = &third;
+  third.last = &second;
+  */
   initialize_model(&first);
 
   for (int epoch = 0; epoch < TRAIN_EPOCHS; epoch++) {
@@ -64,22 +74,37 @@ int main() {
       output[train_label[i]] = 1.0;
       train(&first, &train_image[784 * i], output, 0.0001);
     }
-  }
-
-  int correct = 0;
-  for (int i = 0; i < 10000; i++) {
-    predict(&first, &test_image[784 * i]);  
-    int prediction = -1;
-    double highest = 0.0;
-    for (int j = 0; j < 10; j++) {
-      if (second.activations[j] > highest) {
-        prediction = j;
-        highest = second.activations[j];
+    int correct = 0;
+    for (int i = 0; i < 60000; i++) {
+      predict(&first, &train_image[784 * i]);  
+      int prediction = -1;
+      double highest = 0.0;
+      for (int j = 0; j < 10; j++) {
+        if (second.activations[j] > highest) {
+          prediction = j;
+          highest = second.activations[j];
+        }
+      }
+      if (prediction == train_label[i]) {
+        correct++;
       }
     }
-    if (prediction == test_label[i]) {
-      correct++;
+    printf("Correct on training data: %d\n", correct);
+    correct = 0;
+    for (int i = 0; i < 10000; i++) {
+      predict(&first, &test_image[784 * i]);  
+      int prediction = -1;
+      double highest = 0.0;
+      for (int j = 0; j < 10; j++) {
+        if (second.activations[j] > highest) {
+          prediction = j;
+          highest = second.activations[j];
+        }
+      }
+      if (prediction == test_label[i]) {
+        correct++;
+      }
     }
+    printf("Correct on test data: %d\n", correct);
   }
-  printf("Total correct: %d\n", correct);
 }
