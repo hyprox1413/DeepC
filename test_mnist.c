@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #define TRAIN_EPOCHS (10)
+#define READ_ERROR (-3)
 
 int main() {
   double *train_image = malloc(sizeof(double) * 60000 * 784);
@@ -16,10 +17,31 @@ int main() {
   }
 
   FILE *fp = fopen("mnist.bin", "rb");
-  fread(train_image, sizeof(double), 60000 * 784, fp);
-  fread(train_label, sizeof(int), 60000, fp);
-  fread(test_image, sizeof(double), 10000 * 784, fp);
-  fread(test_label, sizeof(int), 10000, fp);
+  int items_read = 0;
+  items_read = fread(train_image, sizeof(double), 60000 * 784, fp);
+  if (items_read != 60000 * 784) {
+    fprintf(stderr, "Dataset read error.  Did you run \"git lfs fetch\" "
+        "and \"git lfs checkout\"?");
+    exit(3);
+  }
+  items_read = fread(train_label, sizeof(int), 60000, fp);
+  if (items_read != 60000) {
+    fprintf(stderr, "Dataset read error.  Did you run \"git lfs fetch\" "
+        "and \"git lfs checkout\"?");
+    exit(3);
+  }
+  items_read = fread(test_image, sizeof(double), 10000 * 784, fp);
+  if (items_read != 10000 * 784) {
+    fprintf(stderr, "Dataset read error.  Did you run \"git lfs fetch\" "
+        "and \"git lfs checkout\"?");
+    exit(3);
+  }
+  items_read = fread(test_label, sizeof(int), 10000, fp);
+  if (items_read != 10000) {
+    fprintf(stderr, "Dataset read error.  Did you run \"git lfs fetch\" "
+        "and \"git lfs checkout\"?");
+    exit(3);
+  }
 
   /*
   for (int i = 0; i < 60000; i += 1000) {
@@ -57,14 +79,18 @@ int main() {
   srand((unsigned) time(&t));
 
   layer_t first = {784};
-  layer_t second = {10};
+  layer_t second = {25};
   first.next = &second;
   second.last = &first;
-  /*
-  layer_t third = {10};
+  layer_t third = {50};
   second.next = &third;
   third.last = &second;
-  */
+  layer_t fourth = {25};
+  third.next = &fourth;
+  fourth.last = &third;
+  layer_t fifth = {10};
+  fourth.next = &fifth;
+  fifth.last = &fourth;
   initialize_model(&first);
 
   for (int epoch = 0; epoch < TRAIN_EPOCHS; epoch++) {
@@ -80,9 +106,9 @@ int main() {
       int prediction = -1;
       double highest = 0.0;
       for (int j = 0; j < 10; j++) {
-        if (second.activations[j] > highest) {
+        if (fifth.activations[j] > highest) {
           prediction = j;
-          highest = second.activations[j];
+          highest = fifth.activations[j];
         }
       }
       if (prediction == train_label[i]) {
@@ -96,9 +122,9 @@ int main() {
       int prediction = -1;
       double highest = 0.0;
       for (int j = 0; j < 10; j++) {
-        if (second.activations[j] > highest) {
+        if (fifth.activations[j] > highest) {
           prediction = j;
-          highest = second.activations[j];
+          highest = fifth.activations[j];
         }
       }
       if (prediction == test_label[i]) {
