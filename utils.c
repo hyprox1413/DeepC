@@ -9,11 +9,13 @@
  */
 
 double rand_normal(double mean, double variance) {
-  double uniform_1 = rand() / RAND_MAX;
-  if (!uniform_1) {
-    uniform_1 = 1.0 / RAND_MAX;
+  int rand_int = rand();
+  if (!rand_int) {
+    rand_int = 1.0;
   }
-  double uniform_2 = rand() / RAND_MAX;
+  double uniform_1 = (double) rand_int / RAND_MAX;
+  rand_int = rand();
+  double uniform_2 = (double) rand_int / RAND_MAX;
   double normal_raw = sqrt(-2 * log(uniform_1)) *
       cos(2 * M_PI * uniform_2);
   return normal_raw * sqrt(variance) + mean;
