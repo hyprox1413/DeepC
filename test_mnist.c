@@ -1,6 +1,9 @@
-#include "layer.c"
-
+#include <time.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+#include "layer.h"
+#include "utils.h"
 
 #define TRAIN_EPOCHS (10)
 #define READ_ERROR (-3)

@@ -1,4 +1,4 @@
-#include "utils.c"
+#include "layer.h"
 
 #include <assert.h>
 #include <math.h>
@@ -7,22 +7,7 @@
 #include <string.h>
 #include <time.h>
 
-#define OUT_OF_MEMORY (-1)
-#define NAN_ERROR (-2)
-
-typedef struct layer {
-  int neurons;
-
-  /* To add layers to a model, simply assign the next and last pointers.
-     However, the weights need to be re-initialized. */
-
-  struct layer *next;
-  struct layer *last;
-  double *weights;
-  double *biases;
-  double *activations;
-  double *gradients;
-} layer_t;
+#include "utils.h"
 
 /*
  * Initializes a model using Xavier initialization, uses pointer

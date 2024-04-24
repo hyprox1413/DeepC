@@ -1,4 +1,4 @@
-#include "layer.c"
+#include "layer.h"
 
 #define INPUT_DIMENSION (784)
 #define TRAIN_EPOCHS (1000)
